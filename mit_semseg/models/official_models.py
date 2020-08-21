@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from . import official_hrnet
 from .official_batchnorm import SynchronizedBatchNorm2d
 BatchNorm2d = SynchronizedBatchNorm2d
 class SegmentationModuleBase(nn.Module):
@@ -101,7 +102,7 @@ class ModelBuilder:
         pretrained = True if len(weights) == 0 else False
         arch = arch.lower()
         if arch == 'hrnetv2':
-            net_encoder = hrnet.__dict__['hrnetv2'](pretrained=pretrained)
+            net_encoder = official_hrnet.__dict__['hrnetv2'](pretrained=pretrained)
         else:
             raise Exception('Architecture undefined!')
 
