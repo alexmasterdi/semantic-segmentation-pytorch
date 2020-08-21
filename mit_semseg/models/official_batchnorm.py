@@ -2,7 +2,7 @@
 
 import collections
 import queue
-import collections
+import threading
 import torch
 import torch.nn.functional as F
 

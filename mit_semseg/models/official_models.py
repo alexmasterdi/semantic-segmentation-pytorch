@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from . import hrnet
 from .official_batchnorm import SynchronizedBatchNorm2d
 BatchNorm2d = SynchronizedBatchNorm2d
 class SegmentationModuleBase(nn.Module):
