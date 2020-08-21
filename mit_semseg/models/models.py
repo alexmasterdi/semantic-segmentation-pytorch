@@ -26,7 +26,7 @@ class SegmentationModule(SegmentationModuleBase):
         self.crit = crit
         self.deep_sup_scale = deep_sup_scale
 
-    def forward(self, feed_dict, *, segSize=None):
+    def forward(self, feed_dict, *, segSize=(320, 320)):
         # training
         if segSize is None:
             if self.deep_sup_scale is not None: # use deep supervision technique
@@ -43,7 +43,7 @@ class SegmentationModule(SegmentationModuleBase):
             return loss, acc
         # inference
         else:
-            pred = self.decoder(self.encoder(feed_dict['img_data'], return_feature_maps=True), segSize=segSize)
+            pred = self.decoder(self.encoder(feed_dict, return_feature_maps=True), segSize=(320, 320))
             return pred
 
 
@@ -377,11 +377,15 @@ class C1(nn.Module):
 
         if self.use_softmax: # is True during inference
             x = nn.functional.interpolate(
-                x, size=segSize, mode='bilinear', align_corners=False)
+                x, scale_factor=(segSize[0]/x.size(2), segSize[1]/x.size(3)), mode='nearest')
             x = nn.functional.softmax(x, dim=1)
         else:
             x = nn.functional.log_softmax(x, dim=1)
-
+        '''
+        _, x = torch.max(x, dim=1)
+        x = x.long() + 1
+        x = result.squeeze(0).cpu()
+        '''
         return x
 
 
