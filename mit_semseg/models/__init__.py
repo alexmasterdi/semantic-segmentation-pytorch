@@ -1,1 +1,1 @@
-from .models import ModelBuilder, SegmentationModule
+from .official_models import ModelBuilder, SegmentationModule
