@@ -233,11 +233,10 @@ class HighResolutionModule(nn.Module):
                 elif j > i:
                     width_output = x[i].shape[-1]
                     height_output = x[i].shape[-2]
-                    print(width_output.item(), type(width_output.item()))
                     y = y + F.interpolate(
                         self.fuse_layers[i][j](x[j]),
-                        scale_factor=(height_output.item()/self.fuse_layers[i][j](x[j]).size(2).item(),
-                        width_output.item()/self.fuse_layers[i][j](x[j]).size(3).item()),#size=(height_output, width_output),
+                        scale_factor=(float(height_output)/self.fuse_layers[i][j](x[j]).size(2),
+                        float(width_output)/self.fuse_layers[i][j](x[j]).size(3)),#size=(height_output, width_output),
                         mode='nearest')
                 else:
                     y = y + self.fuse_layers[i][j](x[j])
@@ -421,11 +420,11 @@ class HRNetV2(nn.Module):
         # Upsampling
         x0_h, x0_w = x[0].size(2), x[0].size(3)
         x1 = F.interpolate(
-            x[1], scale_factor=(x0_h.item()/x[1].size(2).item(), x0_w.item()/x[1].size(3).item()), mode='nearest')
+            x[1], scale_factor=(float(x0_h)/x[1].size(2), float(x0_w)/x[1].size(3)), mode='nearest')
         x2 = F.interpolate(
-            x[2], scale_factor=(x0_h.item()/x[2].size(2).item(), x0_w.item()/x[2].size(3).item()), mode='nearest')
+            x[2], scale_factor=(float(x0_h)/x[2].size(2), float(x0_w)/x[2].size(3)), mode='nearest')
         x3 = F.interpolate(
-            x[3], scale_factor=(x0_h.item()/x[3].size(2).item(), x0_w.item()/x[3].size(3).item()), mode='nearest')
+            x[3], scale_factor=(float(x0_h)/x[3].size(2), float(x0_w)/x[3].size(3)), mode='nearest')
 
         x = torch.cat([x[0], x1, x2, x3], 1)
 
