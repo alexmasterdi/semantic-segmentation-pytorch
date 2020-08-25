@@ -18,8 +18,8 @@ class SegmentationModuleBase(nn.Module):
 class SegmentationModule(SegmentationModuleBase):
     def __init__(self, net_enc, net_dec, crit, deep_sup_scale=None):
         super(SegmentationModule, self).__init__()
-        self.encoder = net_enc
-        self.decoder = net_dec
+        self.encoder = ModelBuilder.build_encoder(**net_enc)
+        self.decoder = ModelBuilder.build_decoder(**net_dec)
         self.crit = crit
         self.deep_sup_scale = deep_sup_scale
 
@@ -76,11 +76,6 @@ class C1(nn.Module):
             x = nn.functional.softmax(x, dim=1)
         else:
             x = nn.functional.log_softmax(x, dim=1)
-        '''
-        _, x = torch.max(x, dim=1)
-        x = x.long() + 1
-        x = result.squeeze(0).cpu()
-        '''
         return x
 
 class ModelBuilder:
@@ -88,7 +83,6 @@ class ModelBuilder:
     @staticmethod
     def weights_init(m):
         classname = m.__class__.__name__
-        print(classname)
         if classname.find('Conv') != -1:
             nn.init.kaiming_normal_(m.weight.data)
         elif classname.find('BatchNorm') != -1:
