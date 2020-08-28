@@ -18,8 +18,8 @@ class SegmentationModuleBase(nn.Module):
 class SegmentationModule(SegmentationModuleBase):
     def __init__(self, net_enc, net_dec, crit, deep_sup_scale=None):
         super(SegmentationModule, self).__init__()
-        self.encoder = ModelBuilder.build_encoder(**net_enc)
-        self.decoder = ModelBuilder.build_decoder(**net_dec)
+        self.encoder = net_enc
+        self.decoder = net_dec
         self.crit = crit
         self.deep_sup_scale = deep_sup_scale
 
@@ -72,7 +72,7 @@ class C1(nn.Module):
 
         if self.use_softmax: # is True during inference
             x = nn.functional.interpolate(
-                x, scale_factor=(segSize[0]/x.size(2), segSize[1]/x.size(3)), mode='nearest')
+                x, size=segSize, mode='bilinear', align_corners=False)
             x = nn.functional.softmax(x, dim=1)
         else:
             x = nn.functional.log_softmax(x, dim=1)

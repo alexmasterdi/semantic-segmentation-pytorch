@@ -235,9 +235,9 @@ class HighResolutionModule(nn.Module):
                     height_output = x[i].shape[-2]
                     y = y + F.interpolate(
                         self.fuse_layers[i][j](x[j]),
-                        scale_factor=(float(height_output)/self.fuse_layers[i][j](x[j]).size(2),
-                        float(width_output)/self.fuse_layers[i][j](x[j]).size(3)),#size=(height_output, width_output),
-                        mode='nearest')
+                        size=(height_output, width_output),
+                        mode='bilinear',
+                        align_corners=False)
                 else:
                     y = y + self.fuse_layers[i][j](x[j])
             x_fuse.append(self.relu(y))
@@ -420,11 +420,11 @@ class HRNetV2(nn.Module):
         # Upsampling
         x0_h, x0_w = x[0].size(2), x[0].size(3)
         x1 = F.interpolate(
-            x[1], scale_factor=(float(x0_h)/x[1].size(2), float(x0_w)/x[1].size(3)), mode='nearest')
+            x[1], size=(x0_h, x0_w), mode='bilinear', align_corners=False)
         x2 = F.interpolate(
-            x[2], scale_factor=(float(x0_h)/x[2].size(2), float(x0_w)/x[2].size(3)), mode='nearest')
+            x[2], size=(x0_h, x0_w), mode='bilinear', align_corners=False)
         x3 = F.interpolate(
-            x[3], scale_factor=(float(x0_h)/x[3].size(2), float(x0_w)/x[3].size(3)), mode='nearest')
+            x[3], size=(x0_h, x0_w), mode='bilinear', align_corners=False)
 
         x = torch.cat([x[0], x1, x2, x3], 1)
 
