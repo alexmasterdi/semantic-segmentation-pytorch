@@ -20,6 +20,9 @@ class SegmentationModule(SegmentationModuleBase):
         super(SegmentationModule, self).__init__()
         self.encoder = net_enc
         self.decoder = net_dec
+        if type(net_enc) == dict:
+            self.encoder = ModelBuilder.build_encoder(**net_enc)
+            self.decoder = ModelBuilder.build_decoder(**net_dec)
         self.crit = crit
         self.deep_sup_scale = deep_sup_scale
 
